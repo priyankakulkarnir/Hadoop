@@ -1,0 +1,695 @@
+HW3-Hadoop
+
+
+
+
+Part - I
+Part I: Develop and Run Simple Queries
+Step #1: Running a Query from the Hive Shell
+
+Step 1)
+
+Image that your company (Dualcore) ran a contest in which customers posted videos of 
+interesting ways to use their new tablets. A $5,000 prize will be awarded to the customer whose 
+video received the highest rating. 
+ 
+However, the registration data was lost due to an RDBMS crash, and the only information they 
+have is from the videos. The winning customer introduced herself only as “Brian from Chicago” in 
+his video. 
+ 
+You will need to run a Hive query that identifies the possible winner’s record in the customer 
+database so that Dualcore can send him the $5,000 prize. 
+
+Solve this problem:
+All you know about the winner is that the first name is Brian and he lives in Chicago. Use Hive's 
+LIKE operator to do a wildcard search for names such as "Bryan” and “Brian”. Remember to filter 
+on the customer's city. 
+
+Question: Which customers did your query identify as the winner of the $5,000 prize? 
+
+hive> SELECT * FROM Customers WHERE customer_fname LIKE 'Br%an' AND customer_city='Chicago';
+OK
+customers.customer_id	customers.customer_fname	customers.customer_lnamecustomers.customer_email	customers.customer_password	customers.customer_street	customers.customer_city	customers.customer_state	customers.customer_zipcode
+5002	Bryan	Smith	XXXXXXXXX	XXXXXXXXX	3937 Cinder Circle	Chicago	IL	60620
+6429	Brian	Wilson	XXXXXXXXX	XXXXXXXXX	8772 Silent Expressway	Chicago	IL	60615
+Time taken: 0.809 seconds, Fetched: 2 row(s)
+
+
+Step #2: Running a Query Directly from the Command Line 
+Step 2)
+
+1) & 2)
+
+hive> quit;
+WARN: The method class org.apache.commons.logging.impl.SLF4JLogFactory#release() was invoked.
+WARN: Please see http://www.slf4j.org/codes.html#release for an explanation.
+
+[cloudera@quickstart ~]$ hive -e 'SELECT product_id, product_price, product_name FROM PRODUCTS ORDER BY product_price LIMIT 10' 
+
+2016-08-17 18:30:07,234 WARN  [main] mapreduce.TableMapReduceUtil: The hbase-prefix-tree module jar containing PrefixTreeCodec is not present.  Continuing without it.
+Logging initialized using configuration in file:/etc/hive/conf.dist/hive-log4j.properties
+Query ID = cloudera_20160817183030_7e934caf-1e56-4ae7-8a11-7f3c94dc06da
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0007, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0007/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0007
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2016-08-17 18:30:34,689 Stage-1 map = 0%,  reduce = 0%
+2016-08-17 18:31:06,440 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.92 sec
+2016-08-17 18:31:30,337 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 5.13 sec
+MapReduce Total cumulative CPU time: 5 seconds 130 msec
+Ended Job = job_1470887531092_0007
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 5.13 sec   HDFS Read: 72601 HDFS Write: 485 SUCCESS
+Total MapReduce CPU Time Spent: 5 seconds 130 msec
+OK
+1284	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+517	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+414	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+934	0.0	Callaway X Hot Driver
+547	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+388	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+38	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+624	4.99	adidas Batting Helmet Hardware Kit
+815	4.99	Zero Friction Practice Golf Balls - 12 Pack
+336	5.0	Nike Swoosh Headband - 2"
+Time taken: 77.594 seconds, Fetched: 10 row(s)
+WARN: The method class org.apache.commons.logging.impl.SLF4JLogFactory#release() was invoked.
+WARN: Please see http://www.slf4j.org/codes.html#release for an explanation.
+
+Question: Which two product names have a price of zero? 
+
+Nike Men's Hypervenom Phantom Premium FG Socc
+Callaway X Hot Driver
+
+3)
+
+Question​: How many customers ids are in the customers table?
+
+hive> SELECT COUNT(customer_id) FROM Customers;
+
+Query ID = cloudera_20160817185656_2079dc5e-75d4-476b-8115-1c611d21876e
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0008, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0008/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0008
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2016-08-17 18:57:01,165 Stage-1 map = 0%,  reduce = 0%
+2016-08-17 18:57:20,271 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 4.04 sec
+2016-08-17 18:57:38,949 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 5.9 sec
+MapReduce Total cumulative CPU time: 5 seconds 900 msec
+Ended Job = job_1470887531092_0008
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 5.9 sec   HDFS Read: 491566 HDFS Write: 6 SUCCESS
+Total MapReduce CPU Time Spent: 5 seconds 900 msec
+OK
+12435
+Time taken: 57.011 seconds, Fetched: 1 row(s)
+
+
+Question​: How may households are in the customers table? (Hint, try concatenating the
+customers’ address and zipcode and count the number of distinct households)
+
+hive> SELECT COUNT(customer_id), CONCAT(customer_street,' ','customer_city',' ',customer_state,' ',customer_zipcode) AS household  FROM Customers GROUP BY CONCAT(customer_street,' ','customer_city',' ',customer_state,' ',customer_zipcode);
+
+
+hive> SELECT COUNT(DISTINCT (CONCAT(customer_street,' ','customer_city',' ',customer_state,' ',customer_zipcode))) from customers;
+
+Query ID = cloudera_20160817191010_e8e8e6f3-2b7d-4ef4-af4a-93c7dc30fe45
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0021, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0021/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0021
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2016-08-17 20:38:38,953 Stage-1 map = 0%,  reduce = 0%
+2016-08-17 20:38:55,157 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 5.68 sec
+2016-08-17 20:39:17,793 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 9.11 sec
+MapReduce Total cumulative CPU time: 9 seconds 110 msec
+Ended Job = job_1470887531092_0021
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 9.11 sec   HDFS Read: 493350 HDFS Write: 6 SUCCESS
+Total MapReduce CPU Time Spent: 9 seconds 110 msec
+OK
+11508
+Time taken: 50.603 seconds, Fetched: 1 row(s)
+
+Question​: Using customer_id, which state has the most customers? Hint: notice, you can group
+by one field and then order by another. To refresh your memory on “group by”:
+
+
+hive> SELECT customer_state, COUNT(customer_id) ccount FROM customers GROUP BY customer_state ORDER BY ccount DESC LIMIT 1;
+
+Query ID = cloudera_20160817204444_b7bd1be3-f9e2-430e-96f3-731bd35a469a
+Total jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0032, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0032/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0032
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2016-08-17 21:23:16,056 Stage-1 map = 0%,  reduce = 0%
+2016-08-17 21:23:29,474 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.77 sec
+2016-08-17 21:23:48,688 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 5.4 sec
+MapReduce Total cumulative CPU time: 5 seconds 400 msec
+Ended Job = job_1470887531092_0032
+Launching Job 2 out of 2
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0033, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0033/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0033
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2016-08-17 21:24:01,770 Stage-2 map = 0%,  reduce = 0%
+2016-08-17 21:24:12,497 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 1.13 sec
+2016-08-17 21:24:35,868 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 3.08 sec
+MapReduce Total cumulative CPU time: 3 seconds 80 msec
+Ended Job = job_1470887531092_0033
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 5.4 sec   HDFS Read: 491410 HDFS Write: 1043 SUCCESS
+Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 3.08 sec   HDFS Read: 5801 HDFS Write: 8 SUCCESS
+Total MapReduce CPU Time Spent: 8 seconds 480 msec
+OK
+PR	4771
+Time taken: 92.492 seconds, Fetched: 1 row(s)
+
+
+Calculating Revenue and Profit:
+
+Question: ​Which top three product_ids had the most orders? Show your query.
+Extra credit:​ What were the product names? Show your query.
+
+hive> SELECT p.product_name, o.order_item_product_id, COUNT(o.order_item_order_id) ccount FROM order_items o, products p WHERE o.order_item_product_id=p.product_id GROUP BY o.order_item_product_id,p.product_name ORDER BY ccount DESC LIMIT 3;
+
+Query ID = cloudera_20160818093838_376c32e2-f290-4615-a2b2-e8a989ea8cd9
+Total jobs = 2
+Execution log at: /tmp/cloudera/cloudera_20160818093838_376c32e2-f290-4615-a2b2-e8a989ea8cd9.log
+2016-08-18 09:49:00	Starting to launch local task to process map join;	maximum memory = 1013645312
+2016-08-18 09:49:03	Dump the side-table for tag: 1 with group count: 1345 into file: file:/tmp/cloudera/79bb8b2e-f674-48a6-a674-70a16cb86385/hive_2016-08-18_09-48-52_593_3823297598226711687-1/-local-10005/HashTable-Stage-2/MapJoin-mapfile01--.hashtable
+2016-08-18 09:49:04	Uploaded 1 File to: file:/tmp/cloudera/79bb8b2e-f674-48a6-a674-70a16cb86385/hive_2016-08-18_09-48-52_593_3823297598226711687-1/-local-10005/HashTable-Stage-2/MapJoin-mapfile01--.hashtable (81198 bytes)
+2016-08-18 09:49:04	End of local task; Time Taken: 3.064 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0034, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0034/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0034
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2016-08-18 09:49:20,897 Stage-2 map = 0%,  reduce = 0%
+2016-08-18 09:49:38,518 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 5.0 sec
+2016-08-18 09:50:01,537 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 6.88 sec
+MapReduce Total cumulative CPU time: 6 seconds 880 msec
+Ended Job = job_1470887531092_0034
+Launching Job 2 out of 2
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0035, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0035/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0035
+Hadoop job information for Stage-3: number of mappers: 1; number of reducers: 1
+2016-08-18 09:50:16,541 Stage-3 map = 0%,  reduce = 0%
+2016-08-18 09:50:26,742 Stage-3 map = 100%,  reduce = 0%, Cumulative CPU 1.16 sec
+2016-08-18 09:50:40,786 Stage-3 map = 100%,  reduce = 100%, Cumulative CPU 2.83 sec
+MapReduce Total cumulative CPU time: 2 seconds 830 msec
+Ended Job = job_1470887531092_0035
+MapReduce Jobs Launched: 
+Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 6.88 sec   HDFS Read: 1552079 HDFS Write: 5991 SUCCESS
+Stage-Stage-3: Map: 1  Reduce: 1   Cumulative CPU: 2.83 sec   HDFS Read: 10849 HDFS Write: 140 SUCCESS
+Total MapReduce CPU Time Spent: 9 seconds 710 msec
+OK
+Perfect Fitness Perfect Rip Deck	365	24515
+Nike Men's CJ Elite 2 TD Football Cleat	403	22246
+Nike Men's Dri-FIT Victory Golf Polo	502	21035
+Time taken: 109.362 seconds, Fetched: 3 row(s)
+
+hive> create table orders_corrected as select *, from_unixtime(cast(substring(order_date,0,10)as INT)) as order_dateStr from orders;
+
+Query ID = cloudera_20160818093838_376c32e2-f290-4615-a2b2-e8a989ea8cd9
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1470887531092_0036, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0036/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0036
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2016-08-18 10:32:46,110 Stage-1 map = 0%,  reduce = 0%
+2016-08-18 10:33:17,698 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 6.9 sec
+MapReduce Total cumulative CPU time: 6 seconds 900 msec
+Ended Job = job_1470887531092_0036
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to: hdfs://quickstart.cloudera:8020/user/hive/warehouse/.hive-staging_hive_2016-08-18_10-32-20_885_5156653665693540226-1/-ext-10001
+Moving data to: hdfs://quickstart.cloudera:8020/user/hive/warehouse/orders_corrected
+Table default.orders_corrected stats: [numFiles=1, numRows=68883, totalSize=3826540, rawDataSize=3757657]
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1   Cumulative CPU: 6.9 sec   HDFS Read: 674996 HDFS Write: 3826628 SUCCESS
+Total MapReduce CPU Time Spent: 6 seconds 900 msec
+OK
+Time taken: 60.699 seconds
+
+​Question: ​Using the orders_corrected table, count the number of orders (using order_id) that
+had a status of COMPLETE, on May 17, 2014. Show your query. (Notice, you can specify MONTH,
+YEAR and DAY as built-in functions to retreive the month, year or day from a date string).
+
+hive> select COUNT(order_id) from orders_corrected WHERE order_status='COMPLETE' AND order_datestr='2014-05-17 00:00:00';
+
+Query ID = cloudera_20160818093838_376c32e2-f290-4615-a2b2-e8a989ea8cd9
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0037, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0037/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0037
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2016-08-18 15:32:52,304 Stage-1 map = 0%,  reduce = 0%
+2016-08-18 15:33:41,147 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 4.45 sec
+2016-08-18 15:34:25,560 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 6.11 sec
+MapReduce Total cumulative CPU time: 6 seconds 110 msec
+Ended Job = job_1470887531092_0037
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 6.59 sec   HDFS Read: 3834615 HDFS Write: 3 SUCCESS
+Total MapReduce CPU Time Spent: 6 seconds 590 msec
+OK
+61
+Time taken: 125.229 seconds, Fetched: 1 row(s)
+
+
+​Question: ​What was Dualcore’s total revenue from completed orders on May 17, 2014? (Hint:
+use a left semi join). Show your query.
+
+hive> SELECT SUM(oi.order_item_subtotal)AS Revenue FROM order_items oi LEFT SEMI JOIN orders_corrected o 
+    > ON (oi.order_item_order_id = o.order_id) AND (o.order_status='COMPLETE') AND (o.order_datestr='2014-05-17 00:00:00') ;
+Query ID = cloudera_20160824185252_b6148dd7-7c65-4f0e-8d9a-bfa52383ca40
+Total jobs = 1
+Execution log at: /tmp/cloudera/cloudera_20160824185252_b6148dd7-7c65-4f0e-8d9a-bfa52383ca40.log
+2016-08-24 06:59:27	Starting to launch local task to process map join;	maximum memory = 1013645312
+2016-08-24 06:59:29	Dump the side-table for tag: 1 with group count: 61 into file: file:/tmp/cloudera/49c1df51-4312-4e2c-8fc1-bbc30850a797/hive_2016-08-24_18-59-18_149_5946367241986189875-1/-local-10004/HashTable-Stage-2/MapJoin-mapfile21--.hashtable
+2016-08-24 06:59:29	Uploaded 1 File to: file:/tmp/cloudera/49c1df51-4312-4e2c-8fc1-bbc30850a797/hive_2016-08-24_18-59-18_149_5946367241986189875-1/-local-10004/HashTable-Stage-2/MapJoin-mapfile21--.hashtable (1502 bytes)
+2016-08-24 06:59:29	End of local task; Time Taken: 2.465 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1472087500009_0003, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1472087500009_0003/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1472087500009_0003
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2016-08-24 18:59:42,945 Stage-2 map = 0%,  reduce = 0%
+2016-08-24 18:59:55,186 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 4.06 sec
+2016-08-24 19:00:14,492 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 5.94 sec
+MapReduce Total cumulative CPU time: 5 seconds 940 msec
+Ended Job = job_1472087500009_0003
+MapReduce Jobs Launched: 
+Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 5.94 sec   HDFS Read: 1549979 HDFS Write: 19 SUCCESS
+Total MapReduce CPU Time Spent: 5 seconds 940 msec
+OK
+29198.830507278442
+Time taken: 57.491 seconds, Fetched: 1 row(s)
+
+
+
+• The result of the above query is in scientific notation. Rewrite the last query to format the value
+in dollars and cents (e.g., $2000000.00). To do this, format the result using the PRINTF function and the format string "$%.2f". Show your query.
+
+hive> SELECT PRINTF("$%.2f", SUM(oi.order_item_subtotal)) FROM order_items oi LEFT SEMI JOIN orders_corrected o ON (oi.order_item_order_id = o.order_id) 
+    > AND (o.order_status='COMPLETE')
+    > AND (o.order_datestr='2014-05-17 00:00:00');
+Query ID = cloudera_20160824185252_b6148dd7-7c65-4f0e-8d9a-bfa52383ca40
+Total jobs = 1
+Execution log at: /tmp/cloudera/cloudera_20160824185252_b6148dd7-7c65-4f0e-8d9a-bfa52383ca40.log
+2016-08-24 06:56:31	Starting to launch local task to process map join;	maximum memory = 1013645312
+2016-08-24 06:56:34	Dump the side-table for tag: 1 with group count: 61 into file: file:/tmp/cloudera/49c1df51-4312-4e2c-8fc1-bbc30850a797/hive_2016-08-24_18-56-21_128_3947261538366822221-1/-local-10004/HashTable-Stage-2/MapJoin-mapfile11--.hashtable
+2016-08-24 06:56:34	Uploaded 1 File to: file:/tmp/cloudera/49c1df51-4312-4e2c-8fc1-bbc30850a797/hive_2016-08-24_18-56-21_128_3947261538366822221-1/-local-10004/HashTable-Stage-2/MapJoin-mapfile11--.hashtable (1502 bytes)
+2016-08-24 06:56:34	End of local task; Time Taken: 2.935 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1472087500009_0002, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1472087500009_0002/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1472087500009_0002
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2016-08-24 18:56:53,334 Stage-2 map = 0%,  reduce = 0%
+2016-08-24 18:57:24,137 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 5.15 sec
+2016-08-24 18:57:42,502 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 7.58 sec
+MapReduce Total cumulative CPU time: 7 seconds 580 msec
+Ended Job = job_1472087500009_0002
+MapReduce Jobs Launched: 
+Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 7.58 sec   HDFS Read: 1550328 HDFS Write: 10 SUCCESS
+Total MapReduce CPU Time Spent: 7 seconds 580 msec
+OK
+$29198.83
+Time taken: 83.572 seconds, Fetched: 1 row(s)
+
+
+
+Part II: Data Management with Hive 
+
+1) Create a table named ratings for storing tab­delimited records using this structure:
+
+hive> CREATE TABLE ratings (posted TIMESTAMP,cust_id INT,prod_id INT,rating TINYINT, message STRING);
+
+2) Show the table description and verify that its fields have the correct order, names, and types: 
+
+hive> DESCRIBE ratings;
+OK
+posted              	timestamp           	                    
+cust_id             	int                 	                    
+prod_id             	int                 	                    
+rating              	tinyint             	                    
+message             	string  
+
+3.  Next, open a separate terminal window so you can run the following shell command. This will populate the table directly by using the hadoop fs command to copy product ratings data from  2012 to that directory in HDFS: 
+ 
+$ hadoop fs ­put ~/datasets/ratings_2012.txt /user/hive/warehouse/ratings 
+ 
+
+4.  Next, verify that Hive can read the data we just added. Run the following query in Hive to count the number of records in this table (the result should be 464): 
+ 
+hive> SELECT COUNT(*) FROM ratings;
+
+Query ID = cloudera_20160819154646_e8d6db69-f06c-45c5-9635-1426c945abf0
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0046, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0046/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0046
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2016-08-19 15:46:48,627 Stage-1 map = 0%,  reduce = 0%
+2016-08-19 15:47:41,654 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.76 sec
+2016-08-19 15:48:00,229 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 3.71 sec
+MapReduce Total cumulative CPU time: 3 seconds 710 msec
+Ended Job = job_1470887531092_0046
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 3.71 sec   HDFS Read: 33787 HDFS Write: 4 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 710 msec
+OK
+464
+Time taken: 94.203 seconds, Fetched: 1 row(s)
+
+ 
+5.  Another way to load data into a Hive table is through the LOAD DATA command. The next few commands will lead you through the process of copying a local file to HDFS and loading it into Hive. First, copy the 2013 ratings data to HDFS, into your user directory: 
+ 
+$ hadoop fs ­put ~/datasets/ratings_2013.txt ratings_2013.txt 
+ 
+ 
+6.  Verify that the file is there: 
+ 
+$ hadoop fs -­ls ratings_2013.txt 
+-rw-r--r--   1 cloudera cloudera    1240550 2016-08-19 16:14 ratings_2013.txt
+ 
+ 
+7.  Use the ​LOAD DATA  ​statement in Hive to load that file into the ratings table: 
+ 
+LOAD DATA INPATH '/user/cloudera/ratings_2013.txt'  INTO TABLE ratings; 
+
+chgrp: changing ownership of 'hdfs://quickstart.cloudera:8020/user/hive/warehouse/ratings/ratings_2013.txt': User does not belong to supergroup
+Table default.ratings stats: [numFiles=2, totalSize=1267575]
+OK
+Time taken: 0.868 seconds
+
+ 
+8.  The LOAD DATA INPATH command moves the file to the table’s directory. Verify that the file is no longer present in the original directory: 
+ 
+[cloudera@quickstart ~]$ hadoop fs -ls ratings_2013.txt 
+ls: `ratings_2013.txt': No such file or directory
+
+ 
+ 
+9.  Verify that the file is shown alongside the 2012 ratings data in the table’s directory: 
+ 
+$ hadoop fs ­ls /user/hive/warehouse/ratings 
+
+Found 2 items
+-rw-r--r--   1 cloudera supergroup      27025 2016-08-19 15:45 /user/hive/warehouse/ratings/ratings_2012.txt
+-rwxrwxrwx   1 cloudera cloudera      1240550 2016-08-19 15:53 /user/hive/warehouse/ratings/ratings_2013.txt
+
+ 
+ 
+10.  Finally, count the records in the ratings table to ensure that all 21,997 are available: 
+ 
+SELECT COUNT(*) FROM ratings; 
+ 
+Question:  how many ratings are there? 
+
+hive> SELECT COUNT(*) FROM ratings;
+Query ID = cloudera_20160819154646_e8d6db69-f06c-45c5-9635-1426c945abf0
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1470887531092_0048, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1470887531092_0048/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1470887531092_0048
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2016-08-19 16:06:01,155 Stage-1 map = 0%,  reduce = 0%
+2016-08-19 16:06:12,307 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.85 sec
+2016-08-19 16:06:30,767 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 3.75 sec
+MapReduce Total cumulative CPU time: 3 seconds 750 msec
+Ended Job = job_1470887531092_0048
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 3.75 sec   HDFS Read: 1274513 HDFS Write: 6 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 750 msec
+OK
+21997
+Time taken: 43.774 seconds, Fetched: 1 row(s)
+
+
+Create, Load, and Query a Table with Complex Fields 
+
+Run the following statement in Hive to create the table: 
+ 
+CREATE TABLE loyalty_program 
+(cust_id INT, fname STRING, lname STRING, email STRING, level STRING, 
+phone MAP<STRING, STRING>, order_ids ARRAY<INT>, 
+order_value STRUCT<min:INT, max:INT, avg:INT, total:INT>)  
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' 
+COLLECTION ITEMS TERMINATED BY ','  
+MAP KEYS TERMINATED BY ':'; 
+ 
+Change into the directory containing the loyalty_data.txt file and examine the data in 
+loyalty_data.txt to see how it corresponds to the fields in the table.  Then, load it into Hive: 
+ 
+LOAD DATA LOCAL INPATH 'loyalty_data.txt' INTO TABLE loyalty_program; 
+
+
+Create the following queries: 
+ 
+1. Select the HOME phone number (​Hint​: Map keys are case­sensitive) for customer ID 
+1200866. You should see 408-­555-­4914 as the result. 
+hive> select phone["HOME"] from loyalty_program where cust_id='1200866';
+OK
+408-555-4914
+Time taken: 0.467 seconds, Fetched: 1 row(s)
+
+ 
+2. Select the third element from the order_ids array for customer ID 1200866 (​Hint​: Elements are indexed from zero). The query should return 5278505. 
+hive> select order_ids[2] from loyalty_program where cust_id='1200866';
+OK
+5278505
+Time taken: 0.067 seconds, Fetched: 1 row(s)
+
+ 
+3. Select the total attribute from the order_value struct for customer ID 1200866. The query should return 401874. 
+
+hive> select order_value.total from loyalty_program where cust_id='1200866';
+OK
+401874
+
+Show the 3 queries that you ran. 
+
+hive> describe loyalty_program;
+OK
+cust_id             	int                 	                    
+fname               	string              	                    
+lname               	string              	                    
+email               	string              	                    
+level               	string              	                    
+phone               	map<string,string>  	                    
+order_ids           	array<int>          	                    
+order_value           struct<min:int,max:int,avg:int,total:int>	                    
+Time taken: 0.137 seconds, Fetched: 8 row(s)
+
+Alter and Drop a Table 
+ 
+1.  Use ALTER TABLE to rename the ​level​ column to ​status​. 
+ 
+hive> ALTER TABLE loyalty_program CHANGE level status STRING;
+OK
+Time taken: 0.486 seconds
+
+2.  Use the DESCRIBE command on the loyalty_program table to verify the change. 
+ 
+hive> describe loyalty_program;
+OK
+cust_id             	int                 	                    
+fname               	string              	                    
+lname               	string              	                    
+email               	string              	                    
+status              	string              	                    
+phone               	map<string,string>  	                    
+order_ids           	array<int>          	                    
+order_value         	struct<min:int,max:int,avg:int,total:int>	                    
+Time taken: 0.091 seconds, Fetched: 8 row(s)
+
+3.  Use ALTER TABLE to rename the entire table to reward_program. 
+
+hive> ALTER TABLE loyalty_program RENAME TO reward_program;
+OK
+Time taken: 0.596 seconds
+
+hive> show tables;
+OK
+categories
+customers
+departments
+order_items
+orders
+orders_corrected
+products
+ratings
+revenue
+revenueview
+reward_program
+Time taken: 0.096 seconds, Fetched: 11 row(s)
+
+ 
+4.  Although the ALTER TABLE command often requires that we make a corresponding change to 
+the data in HDFS, renaming a table or column does not.  
+ 
+You can verify this by running a query on the table using the new names (the result should be 
+“SILVER”): 
+ 
+SELECT status FROM reward_program WHERE cust_id = 1200866;  
+
+hive> SELECT status FROM reward_program WHERE cust_id = 1200866;
+OK
+SILVER
+Time taken: 0.079 seconds, Fetched: 1 row(s)
+
+ 
+5.  As sometimes happens in the corporate world, priorities have shifted and the program is now canceled. Drop the reward_program table. 
+
+hive> DROP TABLE IF EXISTS reward_program;
+OK
+Time taken: 0.419 seconds
+
+hive> SHOW TABLES;
+OK
+categories
+customers
+departments
+order_items
+orders
+orders_corrected
+products
+ratings
+revenue
+revenueview
+Time taken: 1.087 seconds, Fetched: 10 row(s)
+
+Show the queries that you ran for steps 1 ­ 5. 
+
+
+========================================================================================
+Bonus question (+5 pts) 
+ 
+On your VM, in the ​datasets​ directory, there is a file called ​access_log.gz​ and it contains 
+compressed log entries. 
+ 
+Create a table, using RegexSerde,  to load this file into Hive.  Your new table should contain 
+entries for IP address, date_and_time, request, response and bytes_read.   
+ 
+Bonus question:  Show the query you ran to create the table. 
+
+CREATE EXTERNAL TABLE access_log (
+ip_address STRING,
+date_and_time STRING,
+request STRING,
+response STRING,
+byte_read STRING)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe' 
+WITH SERDEPROPERTIES
+(
+"input.regex" = "([^ ]*) ([^ ]*) ([^ ]*) (-|\\[[^\\]]*\\]) ([^ \"]*|\"[^\"]*\") (-|[0-9]*) (-|[0-9]*)(?: ([^ \"]*|\"[^\"]*\") ([^\"]*|\"[^\"]*\"))?",
+"output.format.string" = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s %9$s" 
+)
+STORED AS TEXTFILE 
+LOCATION '/home/cloudera/datasets';
+
+
+
+
+ 
+
+
+
+
+
+
+
+

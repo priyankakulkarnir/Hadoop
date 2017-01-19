@@ -1,0 +1,48 @@
+Homework 2 - due August 6
+
+Setup:
+    In Eclipse, import HW2.zip as an existing project. Here are the steps:
+
+    0) Before performing the import, make sure your computer has internet access because Maven will download dependencies from Maven repo on the internet
+    1) In Eclipse, select File->Import
+    2) select General->Existing Projects into Workspace and click Next > button
+    3) select "Select archive file" option and then click on the Browse button
+    4) browse file system to the location of the zip file and select the zip file (it is not necessary to unzip the zip file to import)
+    5) click on the Finish button
+
+    Now you have a project called hadoop-student-homework in Eclipse.
+
+    Source code already provided in the project:
+
+    MovieCount.java - an example of how to count movies
+    ConfigurationUtility.java - a utility for examining your configuration
+    HomeworkDriver.java - a utility for running Hadoop jobs
+
+
+Assignment: 
+Write code to do the following
+
+    Homework2 Part1: for each movie, show who are the actors
+    Homework2 Part2: for each actor, show how many movies he/she has played in
+    Bonus (extra credit 10 pts): for each actor, show the average weight of the movies he/she has played in.
+        Bonus is optional, you do not need to do it to get full credit.  It is also much more challenging.
+        Bonus uses two datasets:  data/movie/imdb.tsv and data/movie-weights.tsv
+
+    What data do I use? check out the data/movie directory in the project
+
+
+What to turn in:
+
+Turn in the hadoop-student-homework-1.0.0-SNAPSHOT.jar
+
+    Create the jar using Eclipse:
+        1) Right-click on hadoop-student-homework project
+        2) Select Run As -> Maven install
+        3) The jar is in your target directory: hadoop-student-hadoop-1.0.0-SNAPSHOT.jar
+
+Turn in your java code for Homework2Part1 and Homework2Part2.  If you have it, also turn in your code for Bonus.
+
+Turn in your data through the UCSC portal:  https://online.ucsc-extension.edu/xsl-portal/
+
+Due date:  August 6, 2016 (yes, this year).
+

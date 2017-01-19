@@ -1,0 +1,392 @@
+HW3-Hadoop-Short
+
+Part I: 
+
+Develop and Run Simple Queries
+
+Step #1: Running a Query from the Hive Shell 
+================================================================================================
+
+Query: 
+SELECT * FROM Customers 
+WHERE customer_fname LIKE 'Br%an' AND customer_city='Chicago';
+
+Output: 
+customers.customer_id	customers.customer_fname	customers.customer_lnamecustomers.customer_email	customers.customer_password	customers.customer_street	customers.customer_city	customers.customer_state	customers.customer_zipcode
+5002	Bryan	Smith	XXXXXXXXX	XXXXXXXXX	3937 Cinder Circle	Chicago	IL	60620
+6429	Brian	Wilson	XXXXXXXXX	XXXXXXXXX	8772 Silent Expressway	Chicago	IL	60615
+
+================================================================================================
+
+Question: Which customers did your query identify as the winner of the $5,000 prize?
+
+Answer:
+Bryan and Brian
+
+================================================================================================
+
+Step #2: Running a Query Directly from the Command Line 
+
+Query: 
+hive -e 'SELECT product_id, product_price, product_name 
+FROM PRODUCTS ORDER BY product_price LIMIT 10' 
+
+Output:
+1284	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+517	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+414	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+934	0.0	Callaway X Hot Driver
+547	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+388	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+38	0.0	Nike Men's Hypervenom Phantom Premium FG Socc
+624	4.99	adidas Batting Helmet Hardware Kit
+815	4.99	Zero Friction Practice Golf Balls - 12 Pack
+336	5.0	Nike Swoosh Headband - 2"
+
+================================================================================================
+
+Question: Which two product names have a price of zero? 
+
+Query:
+SELECT DISTINCT product_name FROM products WHERE product_price=0.0;
+
+Answer:
+Callaway X Hot Driver
+Nike Men's Hypervenom Phantom Premium FG Socc
+
+
+================================================================================================
+
+Question​: How many customers ids are in the customers table?
+
+Query:
+SELECT COUNT(customer_id) 
+FROM Customers;
+
+Output and Answer:
+12435
+
+================================================================================================
+
+Question​: How may households are in the customers table? (Hint, try concatenating the
+customers’ address and zipcode and count the number of distinct households)
+
+Query:
+SELECT COUNT
+(
+DISTINCT (CONCAT(
+customer_street,' ','customer_city',' ',customer_state,' ',customer_zipcode))) 
+FROM customers;
+
+Output and Answer:
+11508
+
+================================================================================================
+
+Question​: Using customer_id, which state has the most customers? Hint: notice, you can group
+by one field and then order by another. To refresh your memory on “group by”:
+
+Query:
+SELECT customer_state, 
+COUNT(customer_id) ccount 
+FROM customers 
+GROUP BY customer_state 
+ORDER BY ccount DESC LIMIT 1;
+
+Output and Answer:
+PR	4771
+
+================================================================================================
+
+Calculating Revenue and Profit:
+
+Question: ​Which top three product_ids had the most orders? Show your query.
+Extra credit:​ What were the product names? Show your query.
+
+Query:
+SELECT p.product_name, o.order_item_product_id, 
+COUNT(o.order_item_order_id) ccount 
+FROM order_items o, products p 
+WHERE o.order_item_product_id=p.product_id 
+GROUP BY o.order_item_product_id,p.product_name 
+ORDER BY ccount DESC LIMIT 3;
+
+Output and Answer:
+Perfect Fitness Perfect Rip Deck	365	24515
+Nike Men's CJ Elite 2 TD Football Cleat	403	22246
+Nike Men's Dri-FIT Victory Golf Polo	502	21035
+
+================================================================================================
+
+Query:
+create table orders_corrected as select *, from_unixtime(cast(substring(order_date,0,10)as INT)) as order_dateStr from orders;
+
+================================================================================================
+
+Question: ​Using the orders_corrected table, count the number of orders (using order_id) that had a status 
+of COMPLETE, on May 17, 2014. Show your query. (Notice, you can specify MONTH,YEAR and DAY as built-in functions to retreive the month, year or day from a date string).
+
+Query:
+SELECT COUNT(order_id) FROM orders_corrected 
+WHERE order_status='COMPLETE' AND order_datestr='2014-05-17 00:00:00';
+
+Output and Answer:
+61
+
+================================================================================================
+
+​Question: ​What was Dualcore’s total revenue from completed orders on May 17, 2014? (Hint:
+use a left semi join). Show your query.
+
+Query:
+SELECT SUM(oi.order_item_subtotal)AS Revenue 
+FROM order_items oi 
+LEFT SEMI JOIN orders_corrected o 
+ON (oi.order_item_order_id = o.order_id) 
+AND (o.order_status='COMPLETE') 
+AND (o.order_datestr='2014-05-17 00:00:00') ;
+
+
+Output & Answer:
+29198.830507278442
+
+• The result of the above query is in scientific notation. Rewrite the last query to format the value in dollars and cents (e.g., $2000000.00). 
+To do this, format the result using the PRINTF function and the format string "$%.2f". Show your query.
+
+Query: 
+SELECT PRINTF("$%.2f", SUM(oi.order_item_subtotal)) 
+FROM order_items oi 
+LEFT SEMI JOIN orders_corrected o 
+ON (oi.order_item_order_id = o.order_id) 
+AND (o.order_status='COMPLETE')
+AND (o.order_datestr='2014-05-17 00:00:00');
+
+Output and Answer:
+$29198.83
+
+================================================================================================
+
+
+Part II: 
+Data Management with Hive 
+
+1.Create a table named ratings for storing tab­delimited records using this structure: 
+
+CREATE TABLE ratings (posted TIMESTAMP,cust_id INT,prod_id INT,rating TINYINT, message STRING);
+
+2.Show the table description and verify that its fields have the correct order, names, and types: 
+
+DESCRIBE ratings;  
+posted              	timestamp           	                    
+cust_id             	int                 	                    
+prod_id             	int                 	                    
+rating              	tinyint             	                    
+message             	string  
+
+3. $ hadoop fs ­-put ~/datasets/ratings_2012.txt /user/hive/warehouse/ratings
+
+4. Run the following query in Hive to count the number of records in this table 
+
+SELECT COUNT(*) FROM ratings; 
+464
+
+5. $ hadoop fs ­put ~/datasets/ratings_2013.txt ratings_2013.txt 
+
+6. $ hadoop fs ­-ls ratings_2013.txt 
+-rw-r--r--   1 cloudera cloudera    1240550 2016-08-19 16:14 ratings_2013.txt
+
+7. LOAD DATA INPATH '/user/cloudera/ratings_2013.txt' INTO TABLE ratings; 
+
+8. $ hadoop fs -­ls ratings_2013.txt 
+`ratings_2013.txt': No such file or directory
+
+9. $ hadoop fs ­-ls /user/hive/warehouse/ratings 
+Found 2 items
+-rw-r--r--   1 cloudera supergroup      27025 2016-08-19 15:45 /user/hive/warehouse/ratings/ratings_2012.txt
+-rwxrwxrwx   1 cloudera cloudera      1240550 2016-08-19 15:53 /user/hive/warehouse/ratings/ratings_2013.txt
+
+
+10. Finally, count the records in the ratings table to ensure that all 21,997 are available: 
+ 
+Question:  how many ratings are there? 
+
+Query:
+SELECT COUNT(*) FROM ratings; 
+
+Answer:
+21997
+
+================================================================================================
+
+Create, Load, and Query a Table with Complex Fields:
+
+CREATE:
+CREATE TABLE loyalty_program
+(cust_id INT, fname STRING, lname STRING, email STRING, level STRING, 
+phone MAP<STRING, STRING>, order_ids ARRAY<INT>, 
+order_value STRUCT<min:INT, max:INT, avg:INT, total:INT>)  
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' 
+COLLECTION ITEMS TERMINATED BY ','  
+MAP KEYS TERMINATED BY ':';
+
+LOAD:
+LOAD DATA LOCAL INPATH 'loyalty_data.txt' INTO TABLE loyalty_program; 
+
+================================================================================================
+
+Create the following queries: 
+
+Question: Show the 3 queries that you ran.
+ 
+1. Select the HOME phone number (​Hint​: Map keys are case­sensitive) for customer ID 
+1200866. You should see 408­555­4914 as the result. 
+
+Query:
+SELECT phone["HOME"] FROM loyalty_program WHERE cust_id='1200866';
+
+Output and Answer:
+408-555-4914
+ 
+2. Select the third element from the order_ids array for customer ID 1200866 (​Hint​: Elements are indexed from zero). The query should return 5278505. 
+ 
+Query:
+SELECT order_ids[2] FROM loyalty_program WHERE cust_id='1200866';
+
+Output and Answer:
+5278505
+
+3. Select the total attribute from the order_value struct for customer ID 1200866. The query should return 401874. 
+ 
+Query:
+SELECT order_value.total FROM loyalty_program WHERE cust_id='1200866';
+
+Output and Answer:
+401874
+
+================================================================================================
+
+Alter and Drop a Table: 
+
+Question: Show the queries that you ran for steps 1-5.
+ 
+1.  Use ALTER TABLE to rename the ​level​ column to ​status​. 
+
+Query: 
+ALTER TABLE loyalty_program CHANGE level status STRING;
+
+Output and Answer:
+OK
+ 
+2.  Use the DESCRIBE command on the loyalty_program table to verify the change. 
+
+Query:
+DESCRIBE loyalty_program;
+
+Output and Answer:
+cust_id             	int                 	                    
+fname               	string              	                    
+lname               	string              	                    
+email               	string              	                    
+status              	string              	                    
+phone               	map<string,string>  	                    
+order_ids               array<int>          	                    
+order_value           struct<min:int,max:int,avg:int,total:int>	                    
+ 
+3.  Use ALTER TABLE to rename the entire table to reward_program. 
+
+Query:
+ALTER TABLE loyalty_program RENAME TO reward_program;
+
+Output and Answer:
+OK
+
+Query:
+SHOW TABLES
+ 
+Output and Answer:
+OK
+categories
+customers
+departments
+order_items
+orders
+orders_corrected
+products
+ratings
+revenue
+revenueview
+reward_program
+
+4.  Although the ALTER TABLE command often requires that we make a corresponding change to the data in HDFS, renaming a table or column does not.  
+ 
+You can verify this by running a query on the table using the new names (the result should be “SILVER”):   
+
+Query:
+SELECT status FROM reward_program WHERE cust_id = 1200866;
+
+Output and Answer:
+OK
+SILVER
+
+5.  As sometimes happens in the corporate world, priorities have shifted and the program is now canceled. Drop the reward_program table. 
+
+Query:
+DROP TABLE IF EXISTS reward_program;
+
+Output and Answer:
+OK
+
+Query:
+SHOW TABLES;
+
+Output and Answer:
+OK
+categories
+customers
+departments
+order_items
+orders
+orders_corrected
+products
+ratings
+revenue
+revenueview
+
+================================================================================================
+
+Bonus question (+5 pts) 
+ 
+On your VM, in the ​datasets​ directory, there is a file called ​access_log.gz​ and it contains 
+compressed log entries. 
+ 
+Create a table, using RegexSerde,  to load this file into Hive.  Your new table should contain 
+entries for IP address, date_and_time, request, response and bytes_read.   
+ 
+Bonus question:  Show the query you ran to create the table. 
+
+CREATE EXTERNAL TABLE access_log (
+ip_address STRING,
+date_and_time STRING,
+request STRING,
+response STRING,
+byte_read STRING)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe' 
+WITH SERDEPROPERTIES
+(
+"input.regex" = "([^ ]*) ([^ ]*) ([^ ]*) (-|\\[[^\\]]*\\]) ([^ \"]*|\"[^\"]*\") 
+(-|[0-9]*) (-|[0-9]*)(?: ([^ \"]*|\"[^\"]*\") ([^\"]*|\"[^\"]*\"))?",
+"output.format.string" = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s %9$s" 
+)
+STORED AS TEXTFILE 
+LOCATION '/home/cloudera/datasets';
+
+
+ 
+
+
+
+
+
+
+
+
